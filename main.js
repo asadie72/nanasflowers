@@ -1,10 +1,5 @@
-/* ===== EDIT THESE ===== */
-const SHOP = { name:"Nanas Flowers", email:"orders@nanasflowers.com", phone:"(801) 555-0142" };
-// Paste your Formspree form ID here (the part after formspree.io/f/), e.g. "xyzabcd".
-// Leave it empty and the forms fall back to "copy this message and send it to us".
-const FORMSPREE_ID = "";
-/* ====================== */
-
+/* Nanas Flowers site script. Your contact details and form settings live in settings.js. */
+const SITE = Object.assign({ email:"", phone:"", city:"", hours:"", serviceArea:"", instagram:"", facebook:"", formspreeId:"", kitFormAction:"" }, window.SITE || {});
 const CATS = [
   {id:"Wraps", lane:"order", blurb:"Hand-tied bouquets wrapped in paper and ribbon. Ready to hand over.",
     items:[["Petite wrap","8–10 stems","$35"],["Classic wrap","15–18 stems","$55"],["Lush wrap","25+ stems, premium blooms","$85"],["Dozen roses, wrapped","12 long-stem roses","$75"]]},
@@ -33,6 +28,8 @@ const $ = s => document.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const slug = s => s.toLowerCase().replace(/[^a-z]+/g,"-");
 
+let fillItems = ()=>{};
+if($("#menu-grid")){
 /* ---------- storefront ---------- */
 $("#cat-tabs").innerHTML = CATS.map(c=>`<a href="#cat-${slug(c.id)}">${esc(c.id)}</a>`).join("");
 $("#menu-grid").innerHTML = CATS.map(c=>`
@@ -46,10 +43,10 @@ $("#menu-grid").innerHTML = CATS.map(c=>`
 
 const orderCats = CATS.filter(c=>!["Add-ons","Delivery"].includes(c.id));
 $("#or-cat").innerHTML = orderCats.map(c=>`<option>${esc(c.id)}</option>`).join("");
-function fillItems(){
+fillItems = function(){
   const c = CATS.find(x=>x.id===$("#or-cat").value);
   $("#or-item").innerHTML = c.items.map(([n,,p])=>`<option value="${esc(n+" — "+p)}">${esc(n)} · ${esc(p)}</option>`).join("") + `<option value="Custom / not sure">Custom / not sure</option>`;
-}
+};
 $("#or-cat").addEventListener("change",fillItems); fillItems();
 $("#or-addons").innerHTML = CATS.find(c=>c.id==="Add-ons").items.filter(i=>i[0]!=="Vase upgrade"||true).map(([n,,p],i)=>`<label><input type="checkbox" id="ao-${i}" value="${esc(n)}"> ${esc(n)} <span class="hint">${esc(p)}</span></label>`).join("");
 $("#ev-pieces").innerHTML = PIECES.map((p,i)=>`<label><input type="checkbox" id="pc-${i}" value="${esc(p)}"> ${esc(p)}</label>`).join("");
@@ -63,6 +60,8 @@ document.addEventListener("click",e=>{
   if(c.lane==="event"){ $("#ev-type").value = c.id; location.hash="plan"; }
   else { $("#or-cat").value = c.id; fillItems(); location.hash="request"; }
 });
+
+}
 
 /* ---------- submission ---------- */
 function ticketId(lane){
@@ -98,13 +97,13 @@ function validate(r, errEl){
 async function submitRequest(r, slot, form){
   r.ticket = ticketId(r.lane); r.createdAt = new Date().toISOString();
   let sent = false;
-  if(FORMSPREE_ID){
+  if(SITE.formspreeId){
     const btn = form.querySelector('button[type="submit"]'); const label = btn.textContent;
     btn.disabled = true; btn.textContent = "Sending…";
     try{
       const payload = { _subject: subjectOf(r), email: r.email || undefined, ticket: r.ticket,
         type: r.lane==="event" ? "Event inquiry" : "Order", ...r, summary: buildMessage(r) };
-      const res = await fetch("https://formspree.io/f/"+FORMSPREE_ID, { method:"POST",
+      const res = await fetch("https://formspree.io/f/"+SITE.formspreeId, { method:"POST",
         headers:{ "Content-Type":"application/json", "Accept":"application/json" }, body: JSON.stringify(payload) });
       sent = res.ok;
     }catch(e){ sent = false; }
@@ -126,9 +125,9 @@ function showConfirm(r, slot, form, saved){
       <p>Copy this request and send it by email or text. The subject line keeps it sorted on our end.</p>
       <div class="field"><label>Subject</label><div class="msgbox" id="cf-subj">${esc(subj)}</div></div>
       <div class="field"><label>Message</label><div class="msgbox" id="cf-body">${esc(body)}</div></div>
-      <p>Email <b style="user-select:all">${esc(SHOP.email)}</b> or text <b style="user-select:all">${esc(SHOP.phone)}</b></p>
+      <p>Email <b style="user-select:all">${esc(SITE.email)}</b> or text <b style="user-select:all">${esc(SITE.phone)}</b></p>
       <div class="acts"><button class="btn btn-primary btn-small" type="button" data-copy>Copy request</button>
-        <a class="btn btn-ghost btn-small" href="mailto:${esc(SHOP.email)}?subject=${encodeURIComponent(subj)}&body=${encodeURIComponent(body)}">Open in email app</a>
+        <a class="btn btn-ghost btn-small" href="mailto:${esc(SITE.email)}?subject=${encodeURIComponent(subj)}&body=${encodeURIComponent(body)}">Open in email app</a>
         <button class="btn btn-ghost btn-small" type="button" data-again>Start over</button></div>`;
   }
   slot.appendChild(box);
@@ -142,6 +141,7 @@ function showConfirm(r, slot, form, saved){
   box.scrollIntoView({block:"start"});
 }
 
+if($("#order-form")){
 $("#order-form").addEventListener("submit",e=>{
   e.preventDefault();
   const r = { lane:"order", category:$("#or-cat").value, item:$("#or-item").value,
@@ -157,6 +157,7 @@ $("#event-form").addEventListener("submit",e=>{
     name:$("#ev-name").value.trim(), phone:$("#ev-phone").value.trim(), email:$("#ev-email").value.trim(), prefContact:$("#ev-pref").value, message:$("#ev-msg").value.trim() };
   if(validate(r,$("#ev-err"))) submitRequest(r,$("#event-slot"),$("#event-form"));
 });
+}
 
 let toastT; function toast(m){ const t=$("#toast"); t.textContent=m; t.hidden=false; clearTimeout(toastT); toastT=setTimeout(()=>t.hidden=true,2600); }
 
@@ -165,7 +166,7 @@ let toastT; function toast(m){ const t=$("#toast"); t.textContent=m; t.hidden=fa
   const hdr=document.querySelector("header.top");
   const setH=()=>document.documentElement.style.setProperty("--hdr",hdr.offsetHeight+"px");
   setH(); addEventListener("resize",setH);
-  const links=[...document.querySelectorAll("#titles a")];
+  const links=[...document.querySelectorAll('#titles a[href^="#"]')];
   const secs=links.map(a=>document.querySelector(a.getAttribute("href"))).filter(Boolean);
   function spy(){
     const y=hdr.offsetHeight+120; let cur=null;
@@ -181,4 +182,81 @@ let toastT; function toast(m){ const t=$("#toast"); t.textContent=m; t.hidden=fa
     const io=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.remove("pre"); io.unobserve(e.target);} }),{rootMargin:"0px 0px -12% 0px"});
     els.forEach(el=>io.observe(el));
   }
+})();
+
+/* ---------- contact details from settings.js ---------- */
+(function(){
+  const digits = p => String(p).replace(/[^\d+]/g,"");
+  document.querySelectorAll("[data-site]").forEach(el=>{ const v = SITE[el.dataset.site]; if(!v) return; if(el.dataset.site==="email") el.innerHTML = esc(v).replace("@","@<wbr>"); else el.textContent = v; });
+  document.querySelectorAll("[data-mailto]").forEach(el=>{ if(SITE.email) el.href = "mailto:"+SITE.email; });
+  document.querySelectorAll("[data-tel]").forEach(el=>{ if(SITE.phone) el.href = "tel:"+digits(SITE.phone); });
+  document.querySelectorAll("[data-sms]").forEach(el=>{ if(SITE.phone) el.href = "sms:"+digits(SITE.phone); });
+  document.querySelectorAll("[data-site-href]").forEach(el=>{ const v = SITE[el.dataset.siteHref]; if(v){ el.href = v; el.target = "_blank"; el.rel = "noopener"; el.hidden = false; } });
+  document.querySelectorAll("[data-year]").forEach(el=> el.textContent = new Date().getFullYear());
+  document.addEventListener("click", async e=>{
+    const b = e.target.closest("[data-copy-site]"); if(!b) return;
+    const v = SITE[b.dataset.copySite]; if(!v) return;
+    try{ await navigator.clipboard.writeText(v); toast("Copied: "+v); }catch{ toast(v); }
+  });
+})();
+
+async function sendForm(payload){
+  if(!SITE.formspreeId) return false;
+  try{
+    const res = await fetch("https://formspree.io/f/"+SITE.formspreeId, { method:"POST",
+      headers:{ "Content-Type":"application/json", "Accept":"application/json" }, body: JSON.stringify(payload) });
+    return res.ok;
+  }catch(e){ return false; }
+}
+
+/* ---------- newsletter ---------- */
+(function(){
+  const nf = $("#news-form"); if(!nf) return;
+  nf.addEventListener("submit", async e=>{
+    const email = $("#nl-email").value.trim(), name = $("#nl-name").value.trim(), err = $("#nl-err");
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ e.preventDefault(); err.textContent = "Please enter a valid email address."; err.hidden = false; return; }
+    err.hidden = true;
+    if(SITE.kitFormAction){ nf.action = SITE.kitFormAction; nf.method = "post"; return; } // hands off to Kit
+    e.preventDefault();
+    const btn = nf.querySelector('button[type="submit"]'); btn.disabled = true; btn.textContent = "Signing up…";
+    const ok = await sendForm({ _subject:`[NEWSLETTER] New sign-up · ${email}`, type:"Newsletter sign-up", name, email });
+    btn.disabled = false; btn.textContent = "Sign up";
+    const done = document.createElement("div"); done.className = "news-done"; done.setAttribute("role","status");
+    done.innerHTML = ok
+      ? `<h3>You're on the list!</h3><p>Thanks${name ? ", "+esc(name) : ""}. Watch your inbox for seasonal picks and holiday order dates.</p>`
+      : `<h3>Almost there</h3><p>Online sign-up isn't switched on yet. Email <b>${esc(SITE.email)}</b> with the subject "Newsletter" and we'll add you.</p>`;
+    nf.hidden = true; nf.after(done);
+  });
+})();
+
+/* ---------- contact page message form ---------- */
+(function(){
+  const mf = $("#msg-form"); if(!mf) return;
+  mf.addEventListener("submit", async e=>{
+    e.preventDefault();
+    const r = { name:$("#mg-name").value.trim(), topic:$("#mg-topic").value, email:$("#mg-email").value.trim(), phone:$("#mg-phone").value.trim(), message:$("#mg-msg").value.trim() };
+    const err = $("#mg-err"), miss = [];
+    if(!r.name) miss.push("your name");
+    if(!r.email && !r.phone) miss.push("an email or phone number");
+    if(!r.message) miss.push("a message");
+    if(miss.length){ err.textContent = "Please add "+miss.join(", ")+"."; err.hidden = false; return; }
+    err.hidden = true;
+    const d = new Date(), ticket = "MSG-"+String(d.getMonth()+1).padStart(2,"0")+String(d.getDate()).padStart(2,"0")+"-"+Math.random().toString(36).slice(2,5).toUpperCase();
+    const subj = `[MESSAGE · ${r.topic}] ${r.name} · ${ticket}`;
+    const body = `From: ${r.name}\nEmail: ${r.email||"—"}\nPhone: ${r.phone||"—"}\nAbout: ${r.topic}\n\n${r.message}`;
+    const btn = mf.querySelector('button[type="submit"]'); btn.disabled = true; btn.textContent = "Sending…";
+    const ok = await sendForm({ _subject: subj, type:"Contact message", ticket, ...r });
+    btn.disabled = false; btn.textContent = "Send message";
+    const box = document.createElement("div"); box.className = "confirm";
+    box.innerHTML = ok
+      ? `<span class="ticket">${esc(ticket)}</span><h3>Message sent. Thank you!</h3><p>We'll get back to you within 2 business days.</p>
+         <div class="acts"><button class="btn btn-ghost btn-small" type="button" data-again>Send another message</button></div>`
+      : `<h3>One last step: send it to us</h3><p>Copy your message and email it to <b>${esc(SITE.email)}</b>, or text <b>${esc(SITE.phone)}</b>.</p>
+         <div class="msgbox">${esc(body)}</div>
+         <div class="acts"><a class="btn btn-primary btn-small" href="mailto:${esc(SITE.email)}?subject=${encodeURIComponent(subj)}&body=${encodeURIComponent(body)}">Open in email app</a>
+         <button class="btn btn-ghost btn-small" type="button" data-again>Start over</button></div>`;
+    mf.hidden = true; $("#msg-slot").appendChild(box);
+    box.querySelector("[data-again]").onclick = ()=>{ box.remove(); mf.reset(); mf.hidden = false; };
+    box.scrollIntoView({block:"start"});
+  });
 })();

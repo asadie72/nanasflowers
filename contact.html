@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Contact · Nanas Flowers</title>
+<meta name="description" content="Contact Nanas Flowers by phone, text or email, send a message, or sign up for the newsletter.">
+<meta property="og:title" content="Nanas Flowers">
+<meta property="og:description" content="Handmade bouquets, gifts, and event florals. See pricing and send a request.">
+<meta property="og:image" content="garden-bouquet.jpg">
+<meta name="theme-color" content="#FFF4EA">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='15' fill='%23B4432A'/%3E%3Ctext x='16' y='22' font-size='16' text-anchor='middle' fill='%23fff' font-family='Georgia'%3EN%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gloock&family=Instrument+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <div class="wrap bar">
+    <a class="brand" href="index.html">Nanas <span>Flowers</span></a>
+    <nav class="titles" id="titles" aria-label="Sections">
+      <a href="index.html#bouquets">Bouquets</a>
+      <a href="index.html#gifts">Gifts</a>
+      <a href="index.html#vases">Vases &amp; Holidays</a>
+      <a href="index.html#weddings">Weddings</a>
+      <a href="index.html#special">Events</a>
+      <a href="index.html#sympathy">Sympathy</a>
+      <a href="index.html#pricing">Pricing</a>
+      <a href="contact.html" aria-current="page">Contact</a>
+    </nav>
+    <div class="bar-actions">
+      <a class="btn btn-primary btn-small" href="index.html#request">Request</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="page-hero">
+    <div class="wrap">
+      <p class="eyebrow">Contact</p>
+      <h1>Let's talk flowers.</h1>
+      <p class="lede">Call, text, or email for orders, quotes, and questions. We reply within 2 business days, usually sooner.</p>
+    </div>
+  </section>
+
+  <section class="contact-main">
+    <div class="wrap contact-layout">
+      <div class="contact-grid">
+        <div class="ccard">
+          <p class="eyebrow">Email</p>
+          <p class="big" data-site="email">hello@<wbr>nanasflowers.com</p>
+          <div class="acts">
+            <a class="btn btn-primary btn-small" data-mailto href="#">Email us</a>
+            <button class="btn btn-ghost btn-small" type="button" data-copy-site="email">Copy address</button>
+          </div>
+        </div>
+        <div class="ccard">
+          <p class="eyebrow">Phone &amp; text</p>
+          <p class="big" data-site="phone">(555) 555-0142</p>
+          <div class="acts">
+            <a class="btn btn-primary btn-small" data-tel href="#">Call</a>
+            <a class="btn btn-ghost btn-small" data-sms href="#">Text</a>
+            <button class="btn btn-ghost btn-small" type="button" data-copy-site="phone">Copy number</button>
+          </div>
+        </div>
+        <div class="ccard">
+          <p class="eyebrow">Studio hours</p>
+          <p class="mid" data-site="hours">Tue–Sat · 9am–5pm</p>
+          <p class="muted">Same-week sympathy orders: call or text anytime.</p>
+        </div>
+        <div class="ccard">
+          <p class="eyebrow">Area</p>
+          <p class="mid" data-site="city">Your City, ST</p>
+          <p class="muted" data-site="serviceArea">Local delivery up to 25 miles · free studio pickup</p>
+        </div>
+        <div class="ccard wide quick">
+          <p class="eyebrow">Looking for something specific?</p>
+          <a href="index.html#request"><span><b>Order flowers</b>Bouquets, gifts, vases and holiday pieces</span><span aria-hidden="true">→</span></a>
+          <a href="index.html#plan"><span><b>Plan an event</b>Weddings, memorials, showers and parties</span><span aria-hidden="true">→</span></a>
+          <a href="index.html#pricing"><span><b>See pricing</b>The full flower menu</span><span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+
+      <div id="msg-slot">
+        <form class="order-form" id="msg-form" novalidate>
+          <h2 class="form-title">Send a message</h2>
+          <div class="row">
+            <div class="field"><label for="mg-name">Your name</label><input id="mg-name" autocomplete="name" required></div>
+            <div class="field"><label for="mg-topic">About</label>
+              <select id="mg-topic"><option>General question</option><option>An order</option><option>An event</option><option>Something else</option></select></div>
+          </div>
+          <div class="row">
+            <div class="field"><label for="mg-email">Email</label><input id="mg-email" type="email" autocomplete="email"></div>
+            <div class="field"><label for="mg-phone">Phone</label><input id="mg-phone" type="tel" autocomplete="tel"></div>
+          </div>
+          <div class="field"><label for="mg-msg">Message</label><textarea id="mg-msg" required placeholder="How can we help?"></textarea></div>
+          <div class="form-foot"><small>We'll reply by email or phone.</small><button class="btn btn-primary" type="submit">Send message</button></div>
+          <p class="err" id="mg-err" role="alert" hidden></p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <section class="news" id="newsletter">
+    <div class="wrap">
+      <div>
+        <p class="eyebrow">Newsletter</p>
+        <h2>Fresh picks in your inbox</h2>
+        <p>Seasonal arrangements, holiday order dates, and first dibs on wedding season. About once a month. Unsubscribe anytime.</p>
+      </div>
+      <div>
+        <form class="news-form" id="news-form" method="post" novalidate>
+          <div class="row">
+            <div class="field"><label for="nl-name">First name</label><input id="nl-name" name="fields[first_name]" autocomplete="given-name"></div>
+            <div class="field"><label for="nl-email">Email</label><input id="nl-email" name="email_address" type="email" autocomplete="email" required></div>
+          </div>
+          <div class="form-foot"><small class="fine">We only email about flowers. Never shared.</small><button class="btn btn-primary" type="submit">Sign up</button></div>
+          <p class="err" id="nl-err" role="alert" hidden></p>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap foot-cols">
+    <div>
+      <a class="brand" href="index.html">Nanas <span>Flowers</span></a>
+      <p>Handmade bouquets, gifts and event florals.</p>
+      <p data-site="city">Your City, ST</p>
+    </div>
+    <div>
+      <h3>Contact</h3>
+      <ul>
+        <li><a data-site="email" data-mailto href="contact.html">hello@nanasflowers.com</a></li>
+        <li><a data-site="phone" data-tel href="contact.html">(555) 555-0142</a></li>
+        <li data-site="hours">Tue–Sat · 9am–5pm</li>
+        <li><a data-site-href="instagram" href="#" hidden>Instagram</a></li>
+        <li><a data-site-href="facebook" href="#" hidden>Facebook</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3>Explore</h3>
+      <ul>
+        <li><a href="index.html#pricing">Pricing</a></li>
+        <li><a href="index.html#request">Request an arrangement</a></li>
+        <li><a href="index.html#plan">Plan an event</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="#newsletter">Newsletter</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="wrap foot-base"><span>© <span data-year>2026</span> Nanas Flowers</span><span>Prices are starting points; final quotes confirmed per order.</span></div>
+</footer>
+
+<div class="toast" id="toast" role="status" hidden></div>
+<script src="settings.js"></script>
+<script src="main.js"></script>
+</body>
+</html>
